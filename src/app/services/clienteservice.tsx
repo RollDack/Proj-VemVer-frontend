@@ -16,3 +16,18 @@ export async function createCliente(data: Omit<Cliente, "id">) {
   if (!res.ok) throw new Error("Erro ao criar cliente");
   return res.json();
 }
+
+export async function updateCliente(id: number, data: Omit<Cliente, "id">) {
+  const res = await fetch(`${BASE_URL}/clientes/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Erro ao atualizar cliente");
+  return res.json();
+}
+
+export async function deleteCliente(id: number) {
+  const res = await fetch(`${BASE_URL}/clientes/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Erro ao deletar cliente");
+}

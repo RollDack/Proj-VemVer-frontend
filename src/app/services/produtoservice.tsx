@@ -16,3 +16,18 @@ export async function createProduto(data: Omit<Produto, "id">) {
   if (!res.ok) throw new Error("Erro ao criar produto");
   return res.json();
 }
+
+export async function updateProduto(id: number, data: Omit<Produto, "id">) {
+  const res = await fetch(`${BASE_URL}/produtos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Erro ao atualizar produto");
+  return res.json();
+}
+
+export async function deleteProduto(id: number) {
+  const res = await fetch(`${BASE_URL}/produtos/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Erro ao deletar produto");
+}

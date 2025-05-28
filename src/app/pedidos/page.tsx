@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Pedido, Cliente, Produto } from "../types";
-import { getPedidos, createPedido } from "@/app/services/pedidoservice";
+import { getPedidos, createPedido, deletePedido } from "@/app/services/pedidoservice";
 import { getClientes } from "@/app/services/clienteservice";
 import { getProdutos } from "@/app/services/produtoservice";
 
@@ -17,6 +17,7 @@ export default function PedidosPage() {
     data_pedido: "",
   });
   const [erro, setErro] = useState("");
+  const [filtroCliente, setFiltroCliente] = useState<string>("");
 
   useEffect(() => {
     Promise.all([getPedidos(), getClientes(), getProdutos()]).then(
@@ -27,6 +28,10 @@ export default function PedidosPage() {
       }
     );
   }, []);
+
+  const pedidosFiltrados = filtroCliente
+    ? pedidos.filter((p) => p.id_cliente === Number(filtroCliente))
+    : pedidos;
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,6 +49,11 @@ export default function PedidosPage() {
     } catch {
       setErro("Erro ao cadastrar pedido.");
     }
+  };
+
+  const handleDelete = async (id: number) => {
+    await deletePedido(id);
+    setPedidos((prev) => prev.filter((p) => p.id !== id));
   };
 
   return (
@@ -77,10 +87,25 @@ export default function PedidosPage() {
         </button>
       </div>
 
+      <label className="block mb-2 font-semibold">Filtrar por cliente:</label>
+      <select
+        className="mb-6 border rounded p-2"
+        value={filtroCliente}
+        onChange={(e) => setFiltroCliente(e.target.value)}
+      >
+        <option value="">Todos</option>
+        {clientes.map((c) => (
+          <option key={c.id} value={c.id}>{c.nome}</option>
+        ))}
+      </select>
+
       <ul className="space-y-2">
-        {pedidos.map((p) => (
-          <li key={p.id} className="border p-4 rounded">
-            Cliente #{p.id_cliente} comprou Produto #{p.id_produto} - R$ {p.valor_total}
+        {pedidosFiltrados.map((p) => (
+          <li key={p.id} className="border p-4 rounded flex justify-between items-center">
+            <span>
+              Cliente #{p.id_cliente} comprou Produto #{p.id_produto} - R$ {p.valor_total}
+            </span>
+            <button onClick={() => handleDelete(p.id)} className="text-red-600">🗑️</button>
           </li>
         ))}
       </ul>
