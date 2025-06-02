@@ -2,7 +2,7 @@ import { Pedido } from "../types";
 import { BASE_URL } from "./base";
 
 export async function getPedidos(): Promise<Pedido[]> {
-  const res = await fetch(`${BASE_URL}/pedidos`);
+  const res = await fetch(`${BASE_URL}/pedidos/`);
   if (!res.ok) throw new Error("Erro ao buscar pedidos");
   return res.json();
 }

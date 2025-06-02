@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Produto } from "../app/types/index";
 import { getProdutos } from "@/app/services/produtoservice";
+import Link from "next/link";
 
 export default function Home() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -28,7 +29,7 @@ export default function Home() {
         <div className="flex gap-4">
           <button>🔍</button>
           <button>🛒</button>
-          <button>👤</button>
+          <Link href="/acesso" className="text-xl">👤</Link>
         </div>
       </header>
 
