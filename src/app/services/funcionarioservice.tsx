@@ -2,7 +2,7 @@ import { Funcionario } from "../types";
 import { BASE_URL } from "../services/base";
 
 export async function getFuncionarios(): Promise<Funcionario[]> {
-  const res = await fetch(`${BASE_URL}/funcionarios`);
+  const res = await fetch(`${BASE_URL}/funcionarios/`);
   if (!res.ok) throw new Error("Erro ao buscar funcionários");
   return res.json();
 }
