@@ -3,86 +3,63 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Perfil() {
-  const [usuario, setUsuario] = useState<any>(null);
-  const [tipo, setTipo] = useState<"cliente" | "funcionario" | null>(null);
-  const [form, setForm] = useState({ email: "", telefone: "", cep: "", senha: "" });
-  const [erro, setErro] = useState("");
+export default function PerfilPage() {
+  const [cliente, setCliente] = useState<any>(null);
+  const [pedidos, setPedidos] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const cid = localStorage.getItem("clienteId");
-    const fid = localStorage.getItem("funcionarioId");
-    const tipoUsuario = cid ? "cliente" : fid ? "funcionario" : null;
-    const id = cid || fid;
+    const id = localStorage.getItem("clienteId");
+    if (!id) return router.push("/acesso");
 
-    if (!tipoUsuario || !id) return router.push("/acesso");
+    fetch(`https://proj-vemver.onrender.com/clientes/obter/${id}`)
+      .then(res => res.json())
+      .then(setCliente)
+      .catch(() => setCliente(null));
 
-    fetch(`https://proj-vemver.onrender.com/${tipoUsuario}s/obter/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Falha ao carregar perfil");
-        return res.json();
-      })
-      .then((data) => {
-        setUsuario(data);
-        setTipo(tipoUsuario);
-        setForm({
-          email: data.email,
-          telefone: data.telefone,
-          cep: data.cep,
-          senha: data.senha ?? ""
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setErro("Não foi possível carregar os dados. Faça login novamente.");
-      });
+    fetch("https://proj-vemver.onrender.com/pedidos/")
+      .then(res => res.json())
+      .then(data => setPedidos(data.filter((p: any) => p.id_cliente == id)))
+      .catch(() => setPedidos([]));
   }, [router]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleUpdate = async () => {
-    if (!usuario || !tipo) return;
-    await fetch(`https://proj-vemver.onrender.com/${tipo}s/atualizar/${usuario.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...usuario, ...form })
-    });
-    alert("Atualizado com sucesso");
-  };
-
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("clienteId");
-    localStorage.removeItem("funcionarioId");
     router.push("/");
   };
 
-  if (erro) return <p className="p-6 text-red-600">{erro}</p>;
-  if (!usuario) return <p className="p-6">Carregando perfil...</p>;
-
   return (
     <div className="min-h-screen bg-white text-neutral-800 p-6">
-      <div className="bg-[#D5F2EF] p-6 rounded-xl max-w-4xl mx-auto shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Meu Perfil</h1>
-        <p className="mb-2 font-semibold">Nome: <span className="font-normal">{usuario.nome}</span></p>
-        {tipo === "cliente" && <p className="mb-2 font-semibold">CPF: <span className="font-normal">{usuario.cpf}</span></p>}
-        {tipo === "funcionario" && <p className="mb-2 font-semibold">Salário: <span className="font-normal">R$ {usuario.salario}</span></p>}
-        <p className="mb-4 font-semibold">Idade: <span className="font-normal">{usuario.idade}</span></p>
+      <h1 className="text-2xl font-bold mb-4">Minha Conta</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <input name="email" value={form.email} onChange={handleChange} className="p-2 border rounded" placeholder="Email" />
-          <input name="telefone" value={form.telefone} onChange={handleChange} className="p-2 border rounded" placeholder="Telefone" />
-          <input name="cep" value={form.cep} onChange={handleChange} className="p-2 border rounded" placeholder="CEP" />
-          <input name="senha" value={form.senha} type="password" onChange={handleChange} className="p-2 border rounded" placeholder="Senha" />
+      {cliente ? (
+        <div className="bg-[#D5F2EF] p-4 rounded-xl mb-6">
+          <p><strong>Nome:</strong> {cliente.nome}</p>
+          <p><strong>Email:</strong> {cliente.email}</p>
+          <p><strong>Telefone:</strong> {cliente.telefone}</p>
+          <p><strong>CEP:</strong> {cliente.cep}</p>
+          <p><strong>Idade:</strong> {cliente.idade}</p>
         </div>
+      ) : (
+        <p>Carregando perfil...</p>
+      )}
 
-        <div className="flex gap-4">
-          <button onClick={handleUpdate} className="bg-black text-white px-4 py-2 rounded">Salvar alterações</button>
-          <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded">Sair</button>
-        </div>
-      </div>
+      <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-full mb-8">
+        Sair da Conta
+      </button>
+
+      <h2 className="text-xl font-semibold mb-2">Meus Pedidos</h2>
+      {pedidos.length === 0 ? (
+        <p>Você ainda não realizou pedidos.</p>
+      ) : (
+        <ul className="space-y-2">
+          {pedidos.map(p => (
+            <li key={p.id} className="border p-4 rounded-xl">
+              Pedido #{p.id} — R$ {p.valor_total.toFixed(2)} — {p.data_pedido}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

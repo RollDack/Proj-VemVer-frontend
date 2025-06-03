@@ -1,25 +1,49 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Produto } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
 
+interface ProdutoComQtd extends Produto {
+  quantidade: number;
+}
+
 export default function CarrinhoPage() {
-  const [carrinho, setCarrinho] = useState<Produto[]>([]);
+  const [carrinho, setCarrinho] = useState<ProdutoComQtd[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const itens = JSON.parse(localStorage.getItem("carrinho") || "[]");
     setCarrinho(itens);
   }, []);
 
-  const removerItem = (id: number) => {
-    const atualizado = carrinho.filter((p) => p.id !== id);
-    setCarrinho(atualizado);
-    localStorage.setItem("carrinho", JSON.stringify(atualizado));
+  const salvarCarrinho = (novoCarrinho: ProdutoComQtd[]) => {
+    setCarrinho(novoCarrinho);
+    localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
   };
 
-  const total = carrinho.reduce((soma, p) => soma + p.preco, 0);
+  const removerItem = (id: number) => {
+    const atualizado = carrinho.filter((p) => p.id !== id);
+    salvarCarrinho(atualizado);
+  };
+
+  const alterarQuantidade = (id: number, delta: number) => {
+    const atualizado = carrinho.map((item) =>
+      item.id === id
+        ? { ...item, quantidade: Math.max(1, item.quantidade + delta) }
+        : item
+    );
+    salvarCarrinho(atualizado);
+  };
+
+  const total = carrinho.reduce((soma, p) => soma + p.preco * p.quantidade, 0);
+
+  const irParaCheckout = () => {
+    if (carrinho.length === 0) return alert("Seu carrinho está vazio.");
+    router.push("/pedidos/checkout");
+  };
 
   return (
     <div className="min-h-screen bg-white p-6 text-neutral-800">
@@ -40,26 +64,25 @@ export default function CarrinhoPage() {
                   <p className="text-sm text-gray-600">R$ {produto.preco.toFixed(2)}</p>
                 </div>
               </div>
-              <button
-                onClick={() => removerItem(produto.id)}
-                className="text-red-600 text-xl"
-              >
-                🗑️
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => alterarQuantidade(produto.id, -1)} className="text-xl">➖</button>
+                <span className="font-semibold">{produto.quantidade}</span>
+                <button onClick={() => alterarQuantidade(produto.id, 1)} className="text-xl">➕</button>
+                <button onClick={() => removerItem(produto.id)} className="text-red-600 text-xl">🗑️</button>
+              </div>
             </div>
           ))}
           <div className="text-right font-bold text-lg">
             Total: R$ {total.toFixed(2)}
           </div>
+          <button
+            onClick={irParaCheckout}
+            className="w-full mt-4 bg-green-600 text-white px-6 py-2 rounded-full"
+          >
+            Finalizar Pedido
+          </button>
         </div>
       )}
-      <div className="text-center mt-6">
-        <Link href="/produtos">
-          <button className="bg-black text-white px-6 py-2 rounded-full">
-            Continuar comprando
-          </button>
-        </Link>
-      </div>
     </div>
   );
 }
