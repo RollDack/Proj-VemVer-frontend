@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { Produto } from "@/app/types";
 import { getProdutos } from "@/app/services/produtoservice";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function CatalogoPage() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     getProdutos().then(setProdutos).catch(console.error);
@@ -14,9 +16,18 @@ export default function CatalogoPage() {
 
   const adicionarAoCarrinho = (produto: Produto) => {
     const carrinhoAtual = JSON.parse(localStorage.getItem("carrinho") || "[]");
-    carrinhoAtual.push(produto);
+    const existente = carrinhoAtual.find((item: any) => item.id === produto.id);
+    if (existente) {
+      existente.quantidade += 1;
+    } else {
+      carrinhoAtual.push({ ...produto, quantidade: 1 });
+    }
     localStorage.setItem("carrinho", JSON.stringify(carrinhoAtual));
     alert("Produto adicionado ao carrinho");
+  };
+
+  const comprarAgora = (produto: Produto) => {
+    router.push(`/pedido/checkout?produto=${produto.id}&nome=${encodeURIComponent(produto.nome)}&preco=${produto.preco}&tipo=${produto.tipo}`);
   };
 
   return (
@@ -34,12 +45,20 @@ export default function CatalogoPage() {
             />
             <h2 className="text-lg font-semibold">{produto.nome}</h2>
             <p className="text-gray-700">R$ {produto.preco.toFixed(2)}</p>
-            <button
-              onClick={() => adicionarAoCarrinho(produto)}
-              className="mt-4 bg-black text-white px-4 py-2 rounded-full"
-            >
-              Adicionar ao carrinho
-            </button>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => adicionarAoCarrinho(produto)}
+                className="bg-black text-white px-4 py-2 rounded-full"
+              >
+                Adicionar ao carrinho
+              </button>
+              <button
+                onClick={() => comprarAgora(produto)}
+                className="bg-green-600 text-white px-4 py-2 rounded-full"
+              >
+                Comprar agora
+              </button>
+            </div>
           </div>
         ))}
       </div>
