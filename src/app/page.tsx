@@ -15,13 +15,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-neutral-800">
-      {/* Top Action Bar */}
-      <div className="flex justify-end items-center gap-4 px-6 py-3">
-        <button title="Buscar">🔍</button>
-        <button title="Carrinho">🛒</button>
-        <Link href="/acesso" title="Entrar ou cadastrar">👤</Link>
-      </div>
-
       {/* Hero */}
       <section className="bg-[#D5F2EF] p-10 rounded-xl m-6 flex flex-col md:flex-row items-center justify-between gap-10">
         <div>

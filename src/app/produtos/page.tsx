@@ -1,65 +1,48 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Produto } from "../types";
-import { getProdutos, createProduto, deleteProduto } from "@/app/services/produtoservice";
+import { Produto } from "@/app/types";
+import { getProdutos } from "@/app/services/produtoservice";
+import Image from "next/image";
 
-export default function ProdutosPage() {
+export default function CatalogoPage() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [form, setForm] = useState<Omit<Produto, "id">>({ nome: "", tipo: "", preco: 0 });
-  const [erro, setErro] = useState("");
 
   useEffect(() => {
     getProdutos().then(setProdutos).catch(console.error);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async () => {
-    if (!form.nome || !form.tipo || form.preco <= 0) {
-      setErro("Preencha os campos corretamente.");
-      return;
-    }
-    try {
-      const novo = await createProduto(form);
-      setProdutos([...produtos, novo]);
-      setForm({ nome: "", tipo: "", preco: 0 });
-      setErro("");
-    } catch {
-      setErro("Erro ao cadastrar produto");
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Tem certeza que deseja excluir?")) return;
-    await deleteProduto(id);
-    setProdutos(produtos.filter(p => p.id !== id));
+  const adicionarAoCarrinho = (produto: Produto) => {
+    const carrinhoAtual = JSON.parse(localStorage.getItem("carrinho") || "[]");
+    carrinhoAtual.push(produto);
+    localStorage.setItem("carrinho", JSON.stringify(carrinhoAtual));
+    alert("Produto adicionado ao carrinho");
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Produtos</h1>
-      <div className="text-red-500 mb-2">{erro}</div>
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <input name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} />
-        <input name="tipo" placeholder="Tipo" value={form.tipo} onChange={handleChange} />
-        <input name="preco" type="number" placeholder="Preço" value={form.preco} onChange={handleChange} />
-        <button className="col-span-2 bg-black text-white p-2 rounded" onClick={handleSubmit}>
-          Cadastrar Produto
-        </button>
-      </div>
-
-      <ul className="space-y-2">
-        {produtos.map((p) => (
-          <li key={p.id} className="border p-4 rounded flex justify-between items-center">
-            <span>{p.nome} ({p.tipo}) - R$ {p.preco.toFixed(2)}</span>
-            <button onClick={() => handleDelete(p.id)} className="text-red-600">🗑️</button>
-          </li>
+    <div className="min-h-screen bg-white text-neutral-800 p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Catálogo de Produtos</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {produtos.map((produto) => (
+          <div key={produto.id} className="bg-[#D5F2EF] p-4 rounded-xl shadow-md flex flex-col items-center">
+            <Image
+              src="/glasses1.png"
+              alt={produto.nome}
+              width={150}
+              height={100}
+              className="mb-2"
+            />
+            <h2 className="text-lg font-semibold">{produto.nome}</h2>
+            <p className="text-gray-700">R$ {produto.preco.toFixed(2)}</p>
+            <button
+              onClick={() => adicionarAoCarrinho(produto)}
+              className="mt-4 bg-black text-white px-4 py-2 rounded-full"
+            >
+              Adicionar ao carrinho
+            </button>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
