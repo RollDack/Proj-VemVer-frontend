@@ -6,7 +6,7 @@ export default function AcessoPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-white">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-grey">
       <h1 className="text-2xl font-bold">Escolha seu tipo de acesso</h1>
       <div className="flex gap-4">
         <button
