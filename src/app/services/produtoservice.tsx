@@ -7,6 +7,17 @@ export async function getProdutos(): Promise<Produto[]> {
   return res.json();
 }
 
+export async function decrementarEstoque(id: number) {
+  const res = await fetch(`${BASE_URL}/produtos/${id}/decrementar-estoque`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) throw new Error("Erro ao atualizar estoque");
+  return res.json();
+}
+
+
 export async function createProduto(data: Omit<Produto, "id">) {
   const res = await fetch(`${BASE_URL}/produtos`, {
     method: "POST",

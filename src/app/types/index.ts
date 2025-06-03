@@ -25,7 +25,9 @@ export interface Produto {
   tipo: string;
   preco: number;
   quantidade_estoque?: number;
+  vendido?: boolean; // <-- Novo campo opcional
 }
+
 
 export interface Pedido {
   id: number;
