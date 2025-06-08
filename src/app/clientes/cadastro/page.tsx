@@ -37,7 +37,7 @@ export default function CadastroCliente() {
     }
 
     try {
-      const res = await fetch("https://proj-vemver.onrender.com/clientes/criar_cliente", {
+      const res = await fetch("https://proj-vemver.onrender.com/clientes/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

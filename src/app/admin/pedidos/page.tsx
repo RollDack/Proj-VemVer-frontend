@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pedido, Cliente, Produto } from "../types";
+import { Pedido, Cliente, Produto } from "../../types";
 import { getPedidos, createPedido, deletePedido } from "@/app/services/pedidoservice";
 import { getClientes } from "@/app/services/clienteservice";
 import { getProdutos } from "@/app/services/produtoservice";
