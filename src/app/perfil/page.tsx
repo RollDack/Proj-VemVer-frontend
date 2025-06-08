@@ -12,7 +12,7 @@ export default function PerfilPage() {
     const id = localStorage.getItem("clienteId");
     if (!id) return router.push("/acesso");
 
-    fetch(`https://proj-vemver.onrender.com/clientes/obter/${id}`)
+    fetch(`https://proj-vemver.onrender.com/clientes/${id}`)
       .then(res => res.json())
       .then(setCliente)
       .catch(() => setCliente(null));
@@ -26,6 +26,10 @@ export default function PerfilPage() {
   const logout = () => {
     localStorage.removeItem("clienteId");
     router.push("/");
+  };
+
+  const verDetalhes = (id: number) => {
+    router.push(`/pedidos/${id}`);
   };
 
   return (
@@ -54,8 +58,13 @@ export default function PerfilPage() {
       ) : (
         <ul className="space-y-2">
           {pedidos.map(p => (
-            <li key={p.id} className="border p-4 rounded-xl">
-              Pedido #{p.id} — R$ {p.valor_total.toFixed(2)} — {p.data_pedido}
+            <li key={p.id} className="border p-4 rounded-xl hover:bg-gray-50 cursor-pointer" onClick={() => verDetalhes(p.id)}>
+              <div className="flex justify-between">
+                <span><strong>Pedido #{p.id}</strong></span>
+                <span className="text-sm italic text-green-700">Em processamento</span>
+              </div>
+              <p className="text-sm text-gray-600">Valor total: R$ {p.valor_total.toFixed(2)}</p>
+              <p className="text-sm text-gray-600">Data: {p.data_pedido}</p>
             </li>
           ))}
         </ul>

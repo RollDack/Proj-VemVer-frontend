@@ -9,7 +9,7 @@ export default function FuncionarioPerfil() {
   const [funcionario, setFuncionario] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`https://proj-vemver.onrender.com/funcionarios/obter/${id}`)
+    fetch(`https://proj-vemver.onrender.com/funcionarios/${id}`)
       .then(res => res.json())
       .then(setFuncionario);
   }, [id]);

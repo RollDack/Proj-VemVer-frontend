@@ -39,7 +39,7 @@ export default function CadastroFuncionario() {
     }
 
     try {
-      const res = await fetch("https://proj-vemver.onrender.com/funcionarios/criar_funcionario", {
+      const res = await fetch("https://proj-vemver.onrender.com/funcionarios/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

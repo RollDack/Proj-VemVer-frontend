@@ -10,7 +10,7 @@ export default function ClientePerfil() {
   const [pedidos, setPedidos] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`https://proj-vemver.onrender.com/clientes/obter/${id}`)
+    fetch(`https://proj-vemver.onrender.com/clientes/${id}`)
       .then(res => res.json())
       .then(setCliente);
 

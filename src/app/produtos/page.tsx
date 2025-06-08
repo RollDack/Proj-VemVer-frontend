@@ -6,6 +6,7 @@ import { getProdutos } from "@/app/services/produtoservice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+
 export default function CatalogoPage() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function CatalogoPage() {
   };
 
   const comprarAgora = (produto: Produto) => {
-    router.push(`/pedido/checkout?produto=${produto.id}&nome=${encodeURIComponent(produto.nome)}&preco=${produto.preco}&tipo=${produto.tipo}`);
+    router.push(`/pedidos/checkout?produto=${produto.id}&nome=${encodeURIComponent(produto.nome)}&preco=${produto.preco}&tipo=${produto.tipo}`);
   };
 
   return (

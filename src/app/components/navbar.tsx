@@ -26,7 +26,7 @@ export default function Navbar() {
     const who = cid ? "cliente" : fid ? "funcionario" : null;
     const id = cid || fid;
     if (who && id) {
-      fetch(`https://proj-vemver.onrender.com/${who}s/obter/${id}`)
+      fetch(`https://proj-vemver.onrender.com/${who}s/${id}`)
         .then(res => res.json())
         .then(data => setNome(data.nome));
       setPerfil("/perfil");

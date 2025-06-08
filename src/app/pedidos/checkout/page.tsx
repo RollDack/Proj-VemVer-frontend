@@ -19,7 +19,8 @@ export default function CheckoutPage() {
     if (pid) {
       const pNome = searchParams.get("nome") || "Produto";
       const pPreco = parseFloat(searchParams.get("preco") || "0");
-      setProdutos([{ id: Number(pid), nome: pNome, preco: pPreco, quantidade: 1, tipo: "único" }]);
+      const pTipo = searchParams.get("tipo") || "individual";
+      setProdutos([{ id: Number(pid), nome: pNome, preco: pPreco, quantidade: 1, tipo: pTipo }]);
     } else {
       const carrinho = JSON.parse(localStorage.getItem("carrinho") || "[]");
       setProdutos(carrinho);
@@ -28,25 +29,8 @@ export default function CheckoutPage() {
 
   const total = produtos.reduce((s, p) => s + p.preco * p.quantidade, 0);
 
-  const confirmarPedido = async () => {
-    const payload = {
-      id_cliente: clienteId,
-      valor_total: total,
-      produtos: produtos.map(p => ({ id: p.id, quantidade: p.quantidade })),
-    };
-    try {
-      const res = await fetch("https://proj-vemver.onrender.com/pedidos/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Erro ao criar pedido");
-      alert("Pedido confirmado!");
-      localStorage.removeItem("carrinho");
-      router.push("/perfil");
-    } catch (e) {
-      alert("Erro ao confirmar pedido.");
-    }
+  const irParaPagamento = () => {
+    router.push("/pedidos/pagamento");
   };
 
   return (
@@ -62,10 +46,10 @@ export default function CheckoutPage() {
         Total: R$ {total.toFixed(2)}
       </div>
       <button
-        onClick={confirmarPedido}
+        onClick={irParaPagamento}
         className="mt-6 bg-black text-white px-6 py-2 rounded-full w-full"
       >
-        Confirmar Pedido
+        Ir para Pagamento
       </button>
     </div>
   );
