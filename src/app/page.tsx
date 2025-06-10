@@ -16,8 +16,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-neutral-800">
       {/* Hero */}
-      <section className="bg-[#D5F2EF] p-10 rounded-xl m-6 flex flex-col md:flex-row items-center justify-between gap-10">
-        <div>
+      <section className="bg-gradient-to-br from-[#26B3E3] to-white p-10 rounded-xl m-6 flex flex-col md:flex-row items-center justify-between gap-10 shadow-md">
+        <div className="max-w-md">
           <h2 className="text-4xl font-extrabold mb-4 leading-tight">
             Vemver o seu próximo óculos
           </h2>
@@ -26,37 +26,55 @@ export default function Home() {
           <input
             type="text"
             placeholder="O que você veio ver?"
-            className="p-2 px-4 rounded-full border border-gray-300 w-full max-w-xs"
+            className="p-2 px-4 rounded-full border border-black-500 w-full max-w-xs"
           />
         </div>
-        <div className="relative w-60 h-60">
-          <div className="absolute w-full h-full rounded-full bg-black right-0"></div>
+        <div className="relative w-60 h-60 rounded-full overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300">
           <Image
             src="/glasses-hand.png"
             alt="Óculos na mão"
             fill
-            className="object-contain relative"
+            className="object-cover"
           />
         </div>
+
       </section>
 
       {/* Mais buscados */}
-      <section className="px-6 mt-10">
-        <h3 className="text-2xl font-semibold mb-4">Mais buscados</h3>
-        <p className="text-sm mb-4">Óculos bonitos tem tudo a ver com estilo. Vemver os mais vistos.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {produtos.slice(0, 3).map((produto) => (
-            <div key={produto.id} className="border p-4 rounded-xl text-center">
-              <Image src="/glasses1.png" alt={produto.nome} width={150} height={100} className="mx-auto" />
-              <h4 className="font-semibold mt-2">{produto.nome}</h4>
-              <p className="text-sm text-gray-600">R$ {produto.preco.toFixed(2)}</p>
-            </div>
-          ))}
-        </div>
-        <Link href="/produtos">
-          <button className="mt-6 bg-black text-white px-4 py-2 rounded-full">Veja mais</button>
-        </Link>
-      </section>
+      <section className="px-6 mt-12">
+  <h3 className="text-3xl font-bold mb-3 text-neutral-800">Mais buscados</h3>
+  <p className="text-sm text-gray-600 mb-8">
+    Óculos bonitos têm tudo a ver com estilo. Vemver os mais vistos.
+  </p>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {produtos.slice(0, 3).map((produto) => (
+      <div
+        key={produto.id}
+        className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:shadow-xl transition-all border border-gray-200"
+      >
+        <Image
+          src="/glasses1.png"
+          alt={produto.nome}
+          width={120}
+          height={120}
+          className="rounded-full border-4 border-black mb-4"
+        />
+        <h4 className="text-lg font-semibold text-neutral-800">{produto.nome}</h4>
+        <p className="text-base text-[#4A4A4A] mt-1">R$ {produto.preco.toFixed(2)}</p>
+      </div>
+    ))}
+  </div>
+
+  <div className="text-center mt-10">
+    <Link href="/produtos">
+      <button className="bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-all">
+        Veja mais →
+      </button>
+    </Link>
+  </div>
+</section>
+
 
       {/* Sobre nós */}
       <section className="py-12 px-6 text-center">
@@ -78,26 +96,66 @@ export default function Home() {
       </section>
 
       {/* Categorias */}
-      <section className="bg-[#D5F2EF] px-6 py-12">
-        <h3 className="text-2xl font-semibold text-center mb-8">Categorias</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-          <div>
-            <Image src="/sunglasses.png" alt="Óculos de sol" width={100} height={100} className="mx-auto" />
-            <p>Óculos de Sol</p>
-          </div>
-          <div>
-            <Image src="/geek-icon.png" alt="Geek" width={100} height={100} className="mx-auto" />
-            <p>Geek</p>
-          </div>
-          <div>
-            <Image src="/reading-glasses.png" alt="Óculos de grau" width={100} height={100} className="mx-auto" />
-            <p>Óculos de Grau</p>
-          </div>
-        </div>
-        <div className="text-center mt-6">
-          <button className="bg-black text-white px-4 py-2 rounded-full">Explore mais →</button>
-        </div>
-      </section>
+    
+
+<section className="bg-gradient-to-br from-[#d0f4ff] to-[#26B3E3] px-6 py-16">
+  <h3 className="text-3xl font-bold text-center text-neutral-800 mb-10">Categorias</h3>
+
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+    <Link
+      href="/produtos?categoria=sol"
+      className="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition-all block"
+    >
+      <Image
+        src="/sunglasses.png"
+        alt="Óculos de sol"
+        width={120}
+        height={120}
+        className="mx-auto mb-4 rounded-full border-4 border-black"
+      />
+      <p className="text-lg font-semibold text-gray-800">Óculos de Sol</p>
+    </Link>
+
+    <Link
+      href="/produtos?categoria=geek"
+      className="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition-all block"
+    >
+      <Image
+        src="/geek-icon.png"
+        alt="Geek"
+        width={120}
+        height={120}
+        className="mx-auto mb-4 rounded-full border-4 border-black"
+      />
+      <p className="text-lg font-semibold text-gray-800">Geek</p>
+    </Link>
+
+    <Link
+      href="/produtos?categoria=grau"
+      className="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition-all block"
+    >
+      <Image
+        src="/reading-glasses.png"
+        alt="Óculos de grau"
+        width={120}
+        height={120}
+        className="mx-auto mb-4 rounded-full border-4 border-black"
+      />
+      <p className="text-lg font-semibold text-gray-800">Óculos de Grau</p>
+    </Link>
+  </div>
+
+  <div className="text-center mt-10">
+    <Link href="/produtos">
+      <button className="bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-all">
+        Explore mais →
+      </button>
+    </Link>
+  </div>
+</section>
+
+
+
 
       {/* Depoimentos */}
       <section className="px-6 py-12">

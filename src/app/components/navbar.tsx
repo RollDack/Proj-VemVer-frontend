@@ -36,44 +36,58 @@ export default function Navbar() {
   if (!hasMounted) return null;
 
   return (
-    <nav className="flex flex-col bg-[#D5F2EF] shadow-md">
-      <div className="flex items-center justify-between px-6 py-3">
-        <Link href="/" className="text-xl font-bold text-neutral-800">Vemver</Link>
-        <div className="flex items-center gap-4">
+  <nav className="bg-gradient-to-r from-[#26B3E3] to-white shadow-md">
+    <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between">
+      {/* Logo e carrinho/perfil */}
+      <div className="flex items-center justify-between w-full md:w-auto mb-2 md:mb-0">
+        <Link href="/" className="text-2xl font-bold text-neutral-800">Vemver</Link>
+        <div className="flex items-center gap-4 md:hidden">
           <Link href="/carrinho" className="text-xl" title="Carrinho">🛒</Link>
-          {hasMounted && (
-            perfil ? (
-              <Link
-                href={perfil}
-                className="text-sm font-medium px-3 py-1 rounded-full bg-black text-white hover:bg-neutral-800"
-              >
-                {nome ? `Olá, ${nome}` : "Meu Perfil"}
-              </Link>
-            ) : (
-              <Link
-                href="/acesso"
-                className="text-xl"
-                title="Entrar ou cadastrar"
-              >
-                👤
-              </Link>
-            )
+          {perfil ? (
+            <Link
+              href={perfil}
+              className="text-sm font-medium px-3 py-1 rounded-full bg-black text-white hover:bg-neutral-800"
+            >
+              {nome ? `Olá, ${nome}` : "Meu Perfil"}
+            </Link>
+          ) : (
+            <Link href="/acesso" className="text-xl" title="Entrar ou cadastrar">👤</Link>
           )}
         </div>
       </div>
-      <div className="flex justify-center gap-4 pb-3">
+
+      {/* Links do menu */}
+      <div className="flex flex-wrap justify-center gap-3">
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className={`text-sm font-medium px-3 py-1 rounded-full transition-colors hover:bg-black hover:text-white ${
-              pathname === link.href ? "bg-black text-white" : "text-neutral-800"
+            className={`text-sm font-medium px-4 py-1.5 rounded-full transition-all duration-200 ${
+              pathname === link.href
+                ? "bg-black text-white"
+                : "text-neutral-800 hover:bg-black hover:text-white"
             }`}
           >
             {link.label}
           </Link>
         ))}
       </div>
-    </nav>
-  );
-}
+
+      {/* Carrinho e perfil (versão desktop) */}
+      <div className="hidden md:flex items-center gap-4">
+        <Link href="/carrinho" className="text-xl" title="Carrinho">🛒</Link>
+        {perfil ? (
+          <Link
+            href={perfil}
+            className="text-sm font-medium px-3 py-1 rounded-full bg-black text-white hover:bg-neutral-800"
+          >
+            {nome ? `Olá, ${nome}` : "Meu Perfil"}
+          </Link>
+        ) : (
+          <Link href="/acesso" className="text-xl" title="Entrar ou cadastrar">👤</Link>
+        )}
+      </div>
+    </div>
+  </nav>
+);
+
