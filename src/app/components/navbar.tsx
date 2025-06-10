@@ -10,7 +10,7 @@ const links = [
   { href: "/marcas", label: "Marcas" },
   { href: "/campanhas", label: "Campanhas" },
   { href: "/acessorios", label: "Acessórios" },
-  { href: "/sobre", label: "Sobre nós" },
+  { href: "/sobrenos", label: "Sobre nós" },
 ];
 
 export default function Navbar() {
